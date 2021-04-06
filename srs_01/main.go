@@ -21,7 +21,7 @@ func divByMyself(n int) (result int, err error) {
 		if r := recover(); r != nil {
 			switch x := r.(type) {
 			case error:
-				err = x // тут наш случай, остальное пусть будет для полноты картины.
+				err = x // тут наш случай, остальное для полноты картины.
 			case string:
 				err = errors.New(x)
 			default:
