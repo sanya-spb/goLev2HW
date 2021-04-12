@@ -1,9 +1,66 @@
-## Урок 1. Продвинутая генерация и обработка ошибок и panic. Отложенный вызов функций
+## Урок 2: Кросс-компиляция в Go и более глубокое погружение в тулчейн
 
-1. Для закрепления навыков отложенного вызова функций, напишите программу, содержащую вызов функции, которая будет создавать паническую ситуацию неявно. Затем создайте отложенный вызов, который будет обрабатывать эту паническую ситуацию и, в частности, печатать предупреждение в консоль. Критерием успешного выполнения задания является то, что программа не завершается аварийно ни при каких условиях. 
+1. Выполните сборку ваших предыдущих программ под операционную систему, отличающуюся от текущей. Проанализируйте вывод команды file для полученного исполняемого файла. Попробуйте запустить исполняемый файл
+2. Напишите документацию для одной из предыдущих программ. Запустите сервер документации локально. Убедитесь, что документация отображается корректно.
 
-2. Дополните функцию из п.1 возвратом собственной ошибки в случае возникновения панической ситуации. Собственная ошибка должна хранить время обнаружения панической ситуации. Критерием успешного выполнения задания является наличие обработки созданной ошибки в функции main и вывод ее состояния в консоль
+```bash
+$ make help
+ Choose a command run in goLev2HW:
+  hw      task-02 HomeWork
+  win64   Compile for win64 platform
+  win32   Compile for win32 platform
+  doc     Documentation
+  clean   Clean build files.
+  help    Show this
+$ make hw
+go run main.go
+divByMyself: 3 / 3 = 1
+divByMyself: 2 / 2 = 1
+divByMyself: 1 / 1 = 1
+Error on: 0 / 0
+runtime error: integer divide by zero
+divByMyself: -1 / -1 = 1
+divByMyself: -2 / -2 = 1
+divByMyself: -3 / -3 = 1
+$ make win32
+GOOS=windows GOARCH=386 go build -o app_main32.exe main.go
+file app_main32.exe
+app_main32.exe: PE32 executable (console) Intel 80386 (stripped to external PDB), for MS Windows
+wine app_main32.exe
+divByMyself: 3 / 3 = 1
+divByMyself: 2 / 2 = 1
+divByMyself: 1 / 1 = 1
+Error on: 0 / 0
+runtime error: integer divide by zero
+divByMyself: -1 / -1 = 1
+divByMyself: -2 / -2 = 1
+divByMyself: -3 / -3 = 1
+$ make win64
+GOOS=windows GOARCH=amd64 go build -o app_main64.exe main.go
+file app_main64.exe
+app_main64.exe: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
+wine app_main64.exe
+divByMyself: 3 / 3 = 1
+divByMyself: 2 / 2 = 1
+divByMyself: 1 / 1 = 1
+Error on: 0 / 0
+runtime error: integer divide by zero
+divByMyself: -1 / -1 = 1
+divByMyself: -2 / -2 = 1
+divByMyself: -3 / -3 = 1
+$ make doc
+go doc github.com/sanya-spb/goLev2HW/task2
+package task2 // import "github.com/sanya-spb/goLev2HW/task2"
 
-3. Для закрепления практических навыков программирования, напишите программу, которая создаёт один миллион пустых файлов в известной, пустой директории файловой системы используя вызов os.Create. Ввиду наличия определенных ограничений операционной системы на число открытых файлов, такая программа должна выполнять аварийную остановку. Запустите программу и дождитесь полученной ошибки. Используя отложенный вызов функции закрытия файла, стабилизируйте работу приложения. Критерием успешного выполнения программы является успешное создание миллиона пустых файлов в директории 
+Демонстрационный модуль
 
-4. Выполните задание из блока “Для самостоятельного изучения” данной методички
+показывает применение документации содержит одну тестовую функцию и один
+пример ее использования
+
+func DivByMyself(n int) (result int, err error)
+go doc github.com/sanya-spb/goLev2HW/task2.DivByMyself
+package task2 // import "github.com/sanya-spb/goLev2HW/task2"
+
+func DivByMyself(n int) (result int, err error)
+    Делим "n" само на себя
+```

@@ -3,7 +3,7 @@ package task2_test
 import (
 	"fmt"
 
-	. "github.com/sanya-spb/goLev2HW/test2"
+	. "github.com/sanya-spb/goLev2HW/task2"
 )
 
 func ExampleDivByMyself() {

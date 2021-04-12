@@ -1,39 +1,31 @@
 PROJECT?=github.com/sanya-spb/goLev2HW
 PROJECTNAME=$(shell basename "$(PROJECT)")
 
-## task1
-task1:
-	@echo "_________________________________________"
-	@echo "_______________ task 01   _______________"
-	go run ./srs_01/main.go
+## hw: task-02 HomeWork
+hw:
+	go run main.go
 
-## task2
-task2:
-	@echo "_________________________________________"
-	@echo "_______________ task 02   _______________"
-	@echo "_________________________________________"
-	@echo "_______________ variant a _______________"
-	go run ./srs_02a/main.go
-	@echo "_________________________________________"
-	@echo "_______________ variant b _______________"
-	go run ./srs_02b/main.go
+## win64: Compile for win64 platform
+win64:
+	GOOS=windows GOARCH=amd64 go build -o app_main64.exe main.go
+	file app_main64.exe
+	wine app_main64.exe
 
-## task3
-task3:
-	@echo "_________________________________________"
-	@echo "_______________ task 03   _______________"
-	go run ./srs_03/main.go
+## win32: Compile for win32 platform
+win32:
+	GOOS=windows GOARCH=386 go build -o app_main32.exe main.go
+	file app_main32.exe
+	wine app_main32.exe
 
-## task4
-task4:
-	@echo "_________________________________________"
-	@echo "_______________ task 04   _______________"
-	go run ./srs_04/main.go
+## doc: Documentation
+doc:
+	go doc github.com/sanya-spb/goLev2HW/task2
+	go doc github.com/sanya-spb/goLev2HW/task2.DivByMyself
 
 ## clean: Clean build files.
 clean: 
 	go clean
-	find . -name "out_*" -print0 | xargs -0 rm
+	rm app_main*
 
 ## help: Show this
 help: Makefile
