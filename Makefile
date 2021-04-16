@@ -1,26 +1,26 @@
 PROJECT?=github.com/sanya-spb/goLev2HW
 PROJECTNAME=$(shell basename "$(PROJECT)")
 
-## hw: task-02 HomeWork
-hw:
+GOOS?=linux
+GOARCH?=amd64
+
+RELEASE := $(shell git tag -l | tail -1 | grep -E "v.+"|| echo devel)
+COMMIT := git-$(shell git rev-parse --short HEAD)
+BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
+COPYRIGHT := "sanya-spb"
+
+## build: Build application
+build:
+	GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 go build \
+		-ldflags "-s -w -X ${PROJECT}/utils/version.version=${RELEASE} \
+		-X ${PROJECT}/utils/version.commit=${COMMIT} \
+		-X ${PROJECT}/utils/version.buildTime=${BUILD_TIME} \
+		-X ${PROJECT}/utils/version.copyright=${COPYRIGHT}" \
+		-o app_main main.go
+
+## run: run HomeWork
+run:
 	go run main.go
-
-## win64: Compile for win64 platform
-win64:
-	GOOS=windows GOARCH=amd64 go build -o app_main64.exe main.go
-	file app_main64.exe
-	wine app_main64.exe
-
-## win32: Compile for win32 platform
-win32:
-	GOOS=windows GOARCH=386 go build -o app_main32.exe main.go
-	file app_main32.exe
-	wine app_main32.exe
-
-## doc: Documentation
-doc:
-	go doc github.com/sanya-spb/goLev2HW/task2
-	go doc github.com/sanya-spb/goLev2HW/task2.DivByMyself
 
 ## clean: Clean build files.
 clean: 

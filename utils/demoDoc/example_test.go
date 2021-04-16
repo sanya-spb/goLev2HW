@@ -1,9 +1,9 @@
-package task2_test
+package demoDoc_test
 
 import (
 	"fmt"
 
-	. "github.com/sanya-spb/goLev2HW/task2"
+	. "github.com/sanya-spb/goLev2HW/demoDoc"
 )
 
 func ExampleDivByMyself() {
