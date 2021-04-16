@@ -8,24 +8,10 @@
 4. Очистите неиспользуемые библиотеки.
 
 
-запуск без тагов semver
-```bash
-$ ./app_main 
-version: {Version:devel Commit:git-3a3d567 BuildTime:2021-04-16_07:02:55 Copyright:sanya-spb}
-divByMyself: 1 / 1 = 1
-Error on: 0 / 0
-runtime error: integer divide by zero
-divByMyself: -1 / -1 = 1
-```
-
-далее выполним пункт 1
+выполним пункт 1
 ```bash
 $ git tag -a v0.0.1 -m 'pre-release.'
 $ make build
 $ ./app_main 
-version: {Version:v0.0.1 Commit:git-3a3d567 BuildTime:2021-04-16_07:20:43 Copyright:sanya-spb}
-divByMyself: 1 / 1 = 1
-Error on: 0 / 0
-runtime error: integer divide by zero
-divByMyself: -1 / -1 = 1
+version: {Version:v0.0.1 Commit:git-2c52fe9 BuildTime:2021-04-16_07:44:13 Copyright:sanya-spb}
 ```
