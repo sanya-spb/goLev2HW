@@ -21,5 +21,11 @@ version: {Version:v0.0.2 Commit:git-f5cbadb BuildTime:2021-04-16_07:46:49 Copyri
 ```bash
 $ git tag -a v1.0.0 -m 'release'
 $ make build
-$ ./app_main 
+$ ./app_main
+version: {Version:v1.0.0 Commit:git-66e70dc BuildTime:2021-04-16_07:55:26 Copyright:sanya-spb}
+```
+
+выполним пункт 4
+```bash
+$ go mod tidy #очистит от всего ненужного
 ```
