@@ -10,8 +10,16 @@
 
 выполним пункт 1
 ```bash
-$ git tag -a v0.0.1 -m 'pre-release.'
+$ git tag -a v0.0.2 -m 'pre-release.'
 $ make build
 $ ./app_main 
-version: {Version:v0.0.1 Commit:git-2c52fe9 BuildTime:2021-04-16_07:44:13 Copyright:sanya-spb}
+version: {Version:v0.0.2 Commit:git-f5cbadb BuildTime:2021-04-16_07:46:49 Copyright:sanya-spb}
+```
+
+выполним пункт 2,3
+поправим на даунгрейд gopkg.in/yaml.v2 v2.0.0
+```bash
+$ git tag -a v1.0.0 -m 'release'
+$ make build
+$ ./app_main 
 ```
