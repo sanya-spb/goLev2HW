@@ -1,3 +1,6 @@
+/*
+вариант с универсальным мультипликатором
+*/
 package main
 
 import (
@@ -7,25 +10,24 @@ import (
 var (
 	counter    uint64 = 0
 	maxCounter uint64 = 1000
+	multiplier uint64 = 2
 )
 
 func main() {
 	fmt.Println("counter = ", counter)
 	ch := make(chan uint64)
 
-	// стресс тест..
 	for i := 1; uint64(i) <= maxCounter; i++ {
-		go func() {
-			ch <- uint64(1)
-		}()
+		go func(out chan<- uint64) {
+			out <- uint64(multiplier)
+		}(ch)
 	}
 
-	for counter != maxCounter {
+	for counter < maxCounter*multiplier {
 		if val, ok := <-ch; ok {
 			counter += val
 		}
 	}
 
-	// ждать уже нечего, все сообщения получены, показываем как есть..
-	fmt.Println("counter = ", counter)
+	fmt.Println("counter = ", counter/multiplier)
 }
