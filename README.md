@@ -21,13 +21,14 @@ counter =  1000
 
 вариант 2 предусмотрено время на завершение. 
 В зависимости от того в какой момент вызвать остановку - результат разный:
-```go
+```bash
 $ go run srs_02_v2/main.go 
-2021/04/20 16:42:38 doSomething() started
-.........|^C.....2021/04/20 16:42:40 doSomething() stopped
+2021/04/21 12:59:03 doSomething() started
+|.....____|.....____|.....____|.....____|.^C...._2021/04/21 12:59:13 server finished unexpectedly
+exit status 1
 
 $ go run srs_02_v2/main.go 
-2021/04/20 16:42:46 doSomething() started
-.........|.......^C..|2021/04/20 16:42:50 server has gracefully finished
-2021/04/20 16:42:50 doSomething() stopped
+2021/04/21 12:59:15 doSomething() started
+|.....____|.....____|.....____|....._^C___2021/04/21 12:59:23 server has gracefully finished, context canceled
+2021/04/21 12:59:23 doSomething() stopped
 ```
