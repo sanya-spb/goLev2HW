@@ -11,17 +11,45 @@
 взял пример из методички, и подогнал его под решение задания
 
 #### задание 3
+
+вариант 1 - это рефакторинг кода преподавателя
 ```bash
-$ go test -bench=. ./srs_03/main_test.go 
+$ go test -bench=. ./srs_03_v1/main_test.go 
 goos: linux
 goarch: amd64
 cpu: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
-BenchmarkRunRWMutexMap_01-4         2828            445935 ns/op
-BenchmarkRunRWMutexMap_05-4         1915            614964 ns/op
-BenchmarkRunRWMutexMap_09-4         1605            627308 ns/op
-BenchmarkRunMutexMap_01-4           2842            441621 ns/op
-BenchmarkRunMutexMap_05-4           2101            537223 ns/op
-BenchmarkRunMutexMap_09-4           1725            618434 ns/op
+BenchmarkRunRWMutexMap_01-4         2493            444102 ns/op
+BenchmarkRunRWMutexMap_05-4         2060            551420 ns/op
+BenchmarkRunRWMutexMap_09-4         1924            621033 ns/op
+BenchmarkRunMutexMap_01-4           2268            440935 ns/op
+BenchmarkRunMutexMap_05-4           1942            517074 ns/op
+BenchmarkRunMutexMap_09-4           1970            609245 ns/op
 PASS
-ok      command-line-arguments  7.261s
+ok      command-line-arguments  8.914s
 ```
+
+вариант 2 - это моя "отсебятина"
+```bash
+$ go test -bench=. ./srs_03_v2/NewMapRWMu_test.go 
+goos: linux
+goarch: amd64
+cpu: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+BenchmarkRunRWMutexMap_01-4         2503            440053 ns/op
+BenchmarkRunRWMutexMap_05-4         2133            562686 ns/op
+BenchmarkRunRWMutexMap_09-4         1890            643117 ns/op
+PASS
+ok      command-line-arguments  4.648s
+
+$ go test -bench=. ./srs_03_v2/NewMapMu_test.go 
+goos: linux
+goarch: amd64
+cpu: Intel(R) Core(TM) i5-3570K CPU @ 3.40GHz
+BenchmarkRunMutexMap_01-4           2420            479307 ns/op
+BenchmarkRunMutexMap_05-4           2221            477369 ns/op
+BenchmarkRunMutexMap_09-4           2392            498821 ns/op
+PASS
+ok      command-line-arguments  4.445s
+```
+
+> Вывод: оба варианта показывают одинаковую зависимость.  
+> RWMutex становится "тяжелее" при более частых записях, а Mutex не зависит от преобладания записи над чтением
