@@ -1,40 +1,57 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 	"time"
 )
 
-const n = 1000
+type MapMu struct {
+	mu sync.Mutex
+	m  map[float64]struct{}
+}
 
-func main() {
+func NewMapMu() *MapMu {
+	return &MapMu{
+		m: make(map[float64]struct{}),
+	}
+}
+
+func (c *MapMu) Read(key float64) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	_, ok := c.m[key]
+	return ok
+}
+
+func (c *MapMu) Write(key float64) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.m[key] = struct{}{}
+}
+
+func RunMutexMap(writeRate float64) {
+	testMap := NewMapMu()
+
 	rand.Seed(time.Now().UTC().UnixNano())
 	wg := sync.WaitGroup{}
 
-	go spinner(100 * time.Millisecond)
-
-	// этих мы и будем потом ждать..
-	for i := 0; i < n; i++ {
-		go func() {
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		go func(i float64) {
 			defer wg.Done()
-			wg.Add(1)
-			// эмуляция занятости процесса
-			time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-		}()
+
+			if rand.Float64() < writeRate {
+				testMap.Write(i)
+				return
+			}
+			_ = testMap.Read(i)
+		}(rand.Float64())
 	}
 
 	wg.Wait()
-	fmt.Printf("\rDone\n")
 }
 
-// анимашка, на то что мы не висим..
-func spinner(delay time.Duration) {
-	for {
-		for _, r := range `-\|/` {
-			fmt.Printf("\r%c", r)
-			time.Sleep(delay)
-		}
-	}
+func main() {
+	RunMutexMap(0.5)
 }
