@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/sanya-spb/goLev2HW/srs_01/structurer"
+	"github.com/sanya-spb/goLev2HW/structurer"
 )
 
 type confDatabase struct {
