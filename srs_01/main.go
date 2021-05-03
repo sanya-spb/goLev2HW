@@ -1,29 +1,34 @@
 package main
 
-func main() {
-	type confDatabase struct {
-		Host string `toml:"host" yaml:"host" json:"host"`
-		Port int    `toml:"port" yaml:"port" json:"port"`
-		User string `toml:"user" yaml:"user" json:"user"`
-		Pass string `toml:"pass" yaml:"pass" json:"pass"`
-		Ssl  bool   `toml:"ssl" yaml:"ssl" json:"ssl"`
-	}
+import (
+	"fmt"
 
-	type confServer struct {
-		Bind     []string `toml:"bind" yaml:"bind" json:"bind"`
-		Port     int      `toml:"port" yaml:"port" json:"port"`
-		LogLevel int      `toml:"log_level" yaml:"log_level" json:"log_level"`
-	}
+	"github.com/sanya-spb/goLev2HW/srs_01/structurer"
+)
 
-	type Config struct {
-		Debug    bool         `toml:"debug" yaml:"debug" json:"debug"`
-		MyUrl    string       `toml:"my_url" yaml:"my_url" json:"my_url"`
-		Database confDatabase `toml:"database" yaml:"database" json:"database"`
-		Server   confServer   `toml:"server" yaml:"server" json:"server"`
-	}
-
+type confDatabase struct {
+	Host string
+	Port int
+	User string
+	Pass string
+	Ssl  bool
 }
 
-func fillStruct(in *interface{}, filler map[string]interface{}) {
+func main() {
+	conf := &confDatabase{}
+	filler := map[string]interface{}{
+		"Host": "192.168.1.1",
+		"Port": 8181,
+		"User": "test",
+		"Pass": "pwd45678",
+		"Ssl":  true,
+	}
+
+	fmt.Printf("Result before: %+v\n", conf)
+	err := structurer.FillStruct(conf, filler)
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+	}
+	fmt.Printf("Result after: %+v\n", conf)
 
 }
