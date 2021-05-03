@@ -1,57 +1,29 @@
 package main
 
-import (
-	"math/rand"
-	"sync"
-	"time"
-)
-
-type MapMu struct {
-	mu sync.Mutex
-	m  map[float64]struct{}
-}
-
-func NewMapMu() *MapMu {
-	return &MapMu{
-		m: make(map[float64]struct{}),
-	}
-}
-
-func (c *MapMu) Read(key float64) bool {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	_, ok := c.m[key]
-	return ok
-}
-
-func (c *MapMu) Write(key float64) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.m[key] = struct{}{}
-}
-
-func RunMutexMap(writeRate float64) {
-	testMap := NewMapMu()
-
-	rand.Seed(time.Now().UTC().UnixNano())
-	wg := sync.WaitGroup{}
-
-	for i := 0; i < 1000; i++ {
-		wg.Add(1)
-		go func(i float64) {
-			defer wg.Done()
-
-			if rand.Float64() < writeRate {
-				testMap.Write(i)
-				return
-			}
-			_ = testMap.Read(i)
-		}(rand.Float64())
-	}
-
-	wg.Wait()
-}
-
 func main() {
-	RunMutexMap(0.5)
+	type confDatabase struct {
+		Host string `toml:"host" yaml:"host" json:"host"`
+		Port int    `toml:"port" yaml:"port" json:"port"`
+		User string `toml:"user" yaml:"user" json:"user"`
+		Pass string `toml:"pass" yaml:"pass" json:"pass"`
+		Ssl  bool   `toml:"ssl" yaml:"ssl" json:"ssl"`
+	}
+
+	type confServer struct {
+		Bind     []string `toml:"bind" yaml:"bind" json:"bind"`
+		Port     int      `toml:"port" yaml:"port" json:"port"`
+		LogLevel int      `toml:"log_level" yaml:"log_level" json:"log_level"`
+	}
+
+	type Config struct {
+		Debug    bool         `toml:"debug" yaml:"debug" json:"debug"`
+		MyUrl    string       `toml:"my_url" yaml:"my_url" json:"my_url"`
+		Database confDatabase `toml:"database" yaml:"database" json:"database"`
+		Server   confServer   `toml:"server" yaml:"server" json:"server"`
+	}
+
+}
+
+func fillStruct(in *interface{}, filler map[string]interface{}) {
+
 }
