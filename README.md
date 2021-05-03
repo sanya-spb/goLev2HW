@@ -6,10 +6,14 @@
 
 
 ### задание 1
-![trace_01](./srs_01.png)
+```bash
+> go run .\srs_01\main.go
+Result before: &{Host: Port:0 User: Pass: Ssl:false}
+Result after: &{Host:192.168.1.1 Port:8181 User:test Pass:pwd45678 Ssl:true}
+```
 
 ### задание 2
-![trace_02](./srs_02.png)
-
-### задание 3
-![scr_03](./srs_03.png)
+```bash
+> go run .\srs_02\main.go
+1 <nil>
+```
