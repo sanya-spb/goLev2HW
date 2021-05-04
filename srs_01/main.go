@@ -35,11 +35,11 @@ func main() {
 
 func FillStruct(in interface{}, filler map[string]interface{}) error {
 	if in == nil {
-		return errors.New("arg is nil")
+		return errors.New("arg1 is nil")
 	}
 
 	if filler == nil {
-		return errors.New("filler is nil")
+		return errors.New("arg2 is nil")
 	}
 
 	sVal := reflect.ValueOf(in)
@@ -48,7 +48,7 @@ func FillStruct(in interface{}, filler map[string]interface{}) error {
 	}
 
 	if sVal.Type().Kind() != reflect.Struct {
-		return fmt.Errorf("arg is not struct; kind=%s", sVal.Type().Kind())
+		return fmt.Errorf("arg1 is not struct, %v", sVal.Type().Kind())
 	}
 
 	for key, v := range filler {

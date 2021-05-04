@@ -10,6 +10,10 @@
 > go run .\srs_01\main.go
 Result before: &{Host: Port:0 User: Pass: Ssl:false}
 Result after: &{Host:192.168.1.1 Port:8181 User:test Pass:pwd45678 Ssl:true}
+
+> go test
+PASS
+ok      github.com/sanya-spb/goLev2HW/srs_01    0.002s
 ```
 
 ### задание 2
