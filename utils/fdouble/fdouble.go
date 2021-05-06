@@ -46,7 +46,7 @@ func ScanDir(dir string, n *sync.WaitGroup, fileInfo chan<- FDescr) {
 	}
 	for _, entry := range readDir(dir) {
 		if entry.IsDir() {
-			fmt.Fprintf(os.Stdout, "DIR: %s\n", entry.Name())
+			// fmt.Fprintf(os.Stdout, "DIR: %s\n", entry.Name())
 			n.Add(1)
 			subdir := filepath.Join(dir, entry.Name())
 			go ScanDir(subdir, n, fileInfo)

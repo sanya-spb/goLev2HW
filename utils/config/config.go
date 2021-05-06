@@ -6,13 +6,6 @@ import (
 	"strconv"
 )
 
-// const (
-// 	_ = iota
-// 	ERROR
-// 	WARN
-// 	NOTICE
-// )
-
 //:TODO add debug flag to verbose out
 //:TODO limit scan by filesize
 //:TODO turn exclude checking size

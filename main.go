@@ -1,15 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
-
-	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/sanya-spb/goLev2HW/utils/config"
 	"github.com/sanya-spb/goLev2HW/utils/fdouble"
@@ -26,24 +22,9 @@ var MyApp *APP = new(APP)
 func main() {
 	MyApp.Version = *version.Version
 	MyApp.Config = *config.NewConfig()
-	db, err := sql.Open("sqlite3", ":memory:")
-	// db, err := sql.Open("sqlite3", "db.sqlite")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	_, err = db.Exec(`
-		CREATE TABLE "file_hash" (
-			"id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-			"path" text not null, 
-			"hash" text NOT NULL, 
-			"size" integer NOT NULL);
-	`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("version: %+v\n", MyApp.Version)
-	log.Printf("config: %+v\n", MyApp.Config)
+
+	fmt.Printf("version: %+v\n", MyApp.Version)
+	fmt.Printf("config: %+v\n", MyApp.Config)
 
 	// Cancel traversal when input is detected.
 	go func() {
@@ -63,69 +44,45 @@ func main() {
 		close(fileHashes)
 	}()
 
-	tx, err := db.Begin()
-	if err != nil {
-		log.Fatal(err)
+	type keyDBFileHash struct {
+		hash string
+		size uint64
 	}
-	stmt, err := tx.Prepare(`insert into file_hash(path, hash, size) values(?, ?, ?);`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
+
+	DBfileHash := map[keyDBFileHash][]string{}
+
+	// var cancelled = false
 loop:
 	for {
 		select {
 		case <-fdouble.Done:
-			// Drain fileSizes to allow existing goroutines to finish.
+			// Drain fileHashes to allow existing goroutines to finish.
 			for range fileHashes {
 				// Do nothing.
 			}
-			return
+			fmt.Printf("Cancelled by user\n")
+			os.Exit(1)
 		case fHash, ok := <-fileHashes:
 			if !ok {
 				break loop // fileHashes was closed
 			}
-			_, err = stmt.Exec(fHash.Path(), fHash.Hash(), fHash.Size())
-			if err != nil {
-				log.Fatal(err)
+			// using map features for solve this task:
+			key := keyDBFileHash{
+				hash: fHash.Hash(),
+				size: fHash.Size(),
+			}
+			DBfileHash[key] = append(DBfileHash[key], fHash.Path())
+		}
+
+	}
+
+	for k, vPath := range DBfileHash {
+		if len(vPath) > int(MyApp.Config.DFactor) {
+			fmt.Printf("hash: %s, size: %d\n", k.hash, k.size)
+			fmt.Printf("found %d doubles:\n", len(vPath))
+			for _, v := range vPath {
+				fmt.Printf("  %s\n", v)
 			}
 		}
-	}
-	tx.Commit()
-
-	rows, err := db.Query(`
-		select file_hash.path, file_hash.hash, file_hash.size
-		from file_hash
-		join (
-			select 
-				hash, size
-			from file_hash
-			group by hash, size
-			having 
-				count(id) > 1
-				and count(id) > ?
-			)tt on 
-			tt.hash=file_hash.hash 
-			and tt.size=file_hash.size
-		order by 2, 3;
-	`, MyApp.Config.DFactor)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var (
-			path, hash string
-			size       int
-		)
-		if err := rows.Scan(&path, &hash, &size); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("%s\n  hash: %s\n  size: %d\n---\n", path, hash, size)
-	}
-
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
 	}
 }
