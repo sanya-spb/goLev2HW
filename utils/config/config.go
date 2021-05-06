@@ -13,12 +13,17 @@ import (
 // 	NOTICE
 // )
 
+//:TODO add debug flag to verbose out
+//:TODO limit scan by filesize
+//:TODO turn exclude checking size
+//:TODO turn case crc method
 type Config struct {
-	Debug   bool
-	Dirs    []string
-	Hash    string
-	MaxSize uint64
-	Size    bool
+	// Debug bool
+	Dirs []string
+	// Hash  string
+	// MaxSize uint64
+	DFactor uint64
+	// Size    bool
 	// LogLevel int
 }
 
@@ -26,18 +31,19 @@ type Config struct {
 func NewConfig() *Config {
 	var result *Config = new(Config)
 
+	// flag.BoolVar(&result.Debug, "debug", GetEnvBool("DEBUG", false), "Output verbose debug information")
+	// flag.StringVar(&result.Dirs, "dirs", GetEnv("DIR", "./"), "Path to scan files to doubles, default current directory")
+	// flag.StringVar(&result.Hash, "hash", GetEnv("HASH", "md5"), "HASH method: [md5, crc32], default md5")
+	// flag.Uint64Var(&result.MaxSize, "max-size", GetEnvUInt("MAX_SIZE", 0), "limit maximum file size for checking, 0 - disable")
+	flag.Uint64Var(&result.DFactor, "double-factor", GetEnvUInt("D_FACTOR", 1), "double factor, default > 1")
+	// flag.BoolVar(&result.Size, "size", GetEnvBool("SIZE", true), "Compare files by size")
+	flag.Parse()
+
 	// Determine the initial directories.
-	result.Dirs = os.Args[1:]
+	result.Dirs = flag.Args()
 	if len(result.Dirs) == 0 {
 		result.Dirs = []string{"."}
 	}
-
-	flag.BoolVar(&result.Debug, "debug", GetEnvBool("DEBUG", false), "Output verbose debug information")
-	// flag.StringVar(&result.Dirs, "dirs", GetEnv("DIR", "./"), "Path to scan files to doubles, default current directory")
-	flag.StringVar(&result.Hash, "hash", GetEnv("HASH", "md5"), "HASH method: [md5, crc32], default md5")
-	flag.Uint64Var(&result.MaxSize, "max-size", GetEnvUInt("MAX_SIZE", 0), "limit maximum file size for checking, 0 - disable")
-	flag.BoolVar(&result.Size, "size", GetEnvBool("SIZE", true), "Compare files by size")
-	flag.Parse()
 
 	return result
 }

@@ -9,11 +9,22 @@ import (
 	"sync"
 )
 
-// https://github.com/adonovan/gopl.io/blob/master/ch8/du4/main.go
 type FDescr struct {
 	path string
 	hash string
 	size uint64
+}
+
+func (f *FDescr) Path() string {
+	return f.path
+}
+
+func (f *FDescr) Hash() string {
+	return f.hash
+}
+
+func (f *FDescr) Size() uint64 {
+	return f.size
 }
 
 var Done = make(chan struct{})
